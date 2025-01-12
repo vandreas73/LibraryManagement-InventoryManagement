@@ -1,4 +1,8 @@
+using FluentValidation;
 using InventoryManagementService;
+using InventoryManagementService.Models;
+using InventoryManagementService.Validators;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +17,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContextPool<LibraryContext>(opt =>
 		opt.UseNpgsql(builder.Configuration.GetConnectionString("LibraryContext") ?? throw new InvalidOperationException("Connection string 'UserContext' not found.")));
 
+builder.Services.AddValidatorsFromAssemblyContaining<LibraryValidator>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+	using (var scope = app.Services.CreateScope())
+	{
+		var services = scope.ServiceProvider;
+
+		SeedData.Initialize(services);
+	}
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
