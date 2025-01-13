@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using InventoryManagementService.Models;
 
-namespace InventoryManagementService.Models
+namespace InventoryManagementService.DTOs
 {
-	public class Library
+	public class LibraryDTO
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
@@ -11,6 +11,5 @@ namespace InventoryManagementService.Models
 		public string Email { get; set; }
 		public string Phone { get; set; }
 		public string? Website { get; set; }
-		public ICollection<LibraryBook> LibraryBooks { get; set; }
 	}
 }

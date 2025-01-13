@@ -2,6 +2,7 @@
 using InventoryManagementService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InventoryManagementService.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20250113101600_LibraryBookCount")]
+    partial class LibraryBookCount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +57,7 @@ namespace InventoryManagementService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Libraries", (string)null);
+                    b.ToTable("Libraries");
                 });
 
             modelBuilder.Entity("InventoryManagementService.Models.LibraryBook", b =>
@@ -78,7 +81,7 @@ namespace InventoryManagementService.Migrations
 
                     b.HasIndex("LibraryId");
 
-                    b.ToTable("LibraryBook", (string)null);
+                    b.ToTable("LibraryBook");
                 });
 
             modelBuilder.Entity("InventoryManagementService.Models.LibraryBook", b =>

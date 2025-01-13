@@ -9,5 +9,6 @@ namespace InventoryManagementService
 		{
 		}
 		public DbSet<Library> Libraries { get; set; }
+		public DbSet<InventoryManagementService.Models.LibraryBook> LibraryBook { get; set; } = default!;
 	}
 }

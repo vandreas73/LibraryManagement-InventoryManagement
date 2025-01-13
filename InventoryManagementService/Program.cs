@@ -19,6 +19,8 @@ builder.Services.AddDbContextPool<LibraryContext>(opt =>
 
 builder.Services.AddValidatorsFromAssemblyContaining<LibraryValidator>();
 
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

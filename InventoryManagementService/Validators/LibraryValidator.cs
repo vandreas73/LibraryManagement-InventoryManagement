@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
+using InventoryManagementService.DTOs;
 using InventoryManagementService.Models;
 
 namespace InventoryManagementService.Validators
 {
-	public class LibraryValidator : AbstractValidator<Library>
+	public class LibraryValidator : AbstractValidator<LibraryDTO>
 	{
 		public LibraryValidator()
 		{

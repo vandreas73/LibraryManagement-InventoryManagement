@@ -9,6 +9,8 @@ using InventoryManagementService;
 using InventoryManagementService.Models;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
+using AutoMapper;
+using InventoryManagementService.DTOs;
 
 namespace InventoryManagementService.Controllers
 {
@@ -17,24 +19,27 @@ namespace InventoryManagementService.Controllers
 	public class LibrariesController : ControllerBase
 	{
 		private readonly LibraryContext _context;
-		private readonly IValidator<Library> validator;
+		private readonly IValidator<LibraryDTO> validator;
+		private readonly IMapper mapper;
 
-		public LibrariesController(LibraryContext context, IValidator<Library> validator)
+		public LibrariesController(LibraryContext context, IValidator<LibraryDTO> validator, IMapper mapper)
 		{
 			_context = context;
 			this.validator = validator;
+			this.mapper = mapper;
 		}
 
 		// GET: api/Libraries
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Library>>> GetLibraries()
+		public async Task<ActionResult<IEnumerable<LibraryDTO>>> GetLibraries()
 		{
-			return await _context.Libraries.ToListAsync();
+			var libraries = await _context.Libraries.ToListAsync();
+			return Ok(mapper.Map<IEnumerable<LibraryDTO>>(libraries));
 		}
 
 		// GET: api/Libraries/5
 		[HttpGet("{id}")]
-		public async Task<ActionResult<Library>> GetLibrary(int id)
+		public async Task<ActionResult<LibraryDTO>> GetLibrary(int id)
 		{
 			var library = await _context.Libraries.FindAsync(id);
 
@@ -43,24 +48,26 @@ namespace InventoryManagementService.Controllers
 				return NotFound();
 			}
 
-			return library;
+			return Ok(mapper.Map<LibraryDTO>(library));
 		}
 
 		// PUT: api/Libraries/5
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPut("{id}")]
-		public async Task<IActionResult> PutLibrary(int id, Library library)
+		public async Task<IActionResult> PutLibrary(int id, LibraryDTO libraryDto)
 		{
-			if (id != library.Id)
+			if (id != libraryDto.Id)
 			{
 				return BadRequest();
 			}
 
-			var validationResult = await ValidateUser(library);
+			var validationResult = await ValidateUser(libraryDto);
 			if (validationResult != null)
 			{
 				return validationResult;
 			}
+
+			var library = mapper.Map<Library>(libraryDto);
 
 			_context.Entry(library).State = EntityState.Modified;
 
@@ -86,18 +93,20 @@ namespace InventoryManagementService.Controllers
 		// POST: api/Libraries
 		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 		[HttpPost]
-		public async Task<ActionResult<Library>> PostLibrary(Library library)
+		public async Task<ActionResult<LibraryDTO>> PostLibrary(LibraryDTO libraryDto)
 		{
-			var validationResult = await ValidateUser(library);
+			var validationResult = await ValidateUser(libraryDto);
 			if (validationResult != null)
 			{
 				return validationResult;
 			}
 
+			var library = mapper.Map<Library>(libraryDto);
+
 			_context.Libraries.Add(library);
 			await _context.SaveChangesAsync();
 
-			return CreatedAtAction("GetLibrary", new { id = library.Id }, library);
+			return CreatedAtAction("GetLibrary", new { id = library.Id }, mapper.Map<LibraryDTO>(library));
 		}
 
 		// DELETE: api/Libraries/5
@@ -117,14 +126,14 @@ namespace InventoryManagementService.Controllers
 		}
 
 		[HttpGet("search")]
-		public async Task<ActionResult<IEnumerable<Library>>> SearchLibraries([FromQuery] string name)
+		public async Task<ActionResult<IEnumerable<LibraryDTO>>> SearchLibraries([FromQuery] string name = "", string address = "")
 		{
-			var libraries = await _context.Libraries.Where(l => l.Name.Contains(name)).ToListAsync();
+			var libraries = await _context.Libraries.Where(l => l.Name.ToLower().Contains(name) && l.Address.ToLower().Contains(address)).ToListAsync();
 			if (libraries == null)
 			{
 				return NotFound();
 			}
-			return libraries;
+			return Ok(mapper.Map<IEnumerable<LibraryDTO>>(libraries));
 		}
 
 		private bool LibraryExists(int id)
@@ -132,9 +141,9 @@ namespace InventoryManagementService.Controllers
 			return _context.Libraries.Any(e => e.Id == id);
 		}
 
-		private async Task<ActionResult> ValidateUser(Library request)
+		private async Task<ActionResult> ValidateUser(LibraryDTO libraryDto)
 		{
-			FluentValidation.Results.ValidationResult result = await validator.ValidateAsync(request);
+			FluentValidation.Results.ValidationResult result = await validator.ValidateAsync(libraryDto);
 
 			if (!result.IsValid)
 			{
