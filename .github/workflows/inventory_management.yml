@@ -4,7 +4,7 @@ on:
     - main
 env:
   DOTNET_CORE_VERSION: 7.0.x
-  CONTAINER_APP_NAME: inventorymanagementservice-container-app
+  CONTAINER_APP_NAME: inventorymgmt-c-app
   CONTAINER_APP_ENVIRONMENT_NAME: managedEnvironment-LibraryManageme-a030
   RESOURCE_GROUP: LibraryManagement
   CONTAINER_REGISTRY_NAME: catalogcontainerregistry
