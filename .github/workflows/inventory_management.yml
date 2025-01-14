@@ -37,6 +37,6 @@ jobs:
         environmentVariables: |
           ASPNETCORE_ENVIRONMENT=Development
           ConnectionStrings__LibraryContext='${{ secrets.ConnectionStrings__LibraryContext }}'
-          managedEnvironment_LibraryManageme_a030_SPN='${{ secrets.managedEnvironment_LibraryManageme_a030_SPN }}'
-          CatalogContainerRegistry_USERNAME_B157='${{ secrets.CatalogContainerRegistry_USERNAME_B157 }}'
-          CatalogContainerRegistry_PASSWORD_B157='${{ secrets.CatalogContainerRegistry_PASSWORD_B157 }}'
+          managedEnvironment='${{ secrets.managedEnvironment_LibraryManageme_a030_SPN }}'
+          USERNAME_B157='${{ secrets.CatalogContainerRegistry_USERNAME_B157 }}'
+          PASSWORD_B157='${{ secrets.CatalogContainerRegistry_PASSWORD_B157 }}'
