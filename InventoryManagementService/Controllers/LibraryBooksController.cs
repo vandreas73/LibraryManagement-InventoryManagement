@@ -163,9 +163,10 @@ namespace InventoryManagementService.Controllers
 				{
 					Id = libraryBook.Id,
 					LibraryId = libraryBook.LibraryId,
+					LibraryName = library.Name,
+					LibraryAddress = library.Address,
 					BookId = libraryBook.BookId,
 					Count = libraryBook.Count,
-					LibraryName = library.Name,
 					BookTitle = book.Title,
 					BookAuthor = book.AuthorName
 				});
@@ -191,9 +192,10 @@ namespace InventoryManagementService.Controllers
 				{
 					Id = libraryBook.Id,
 					LibraryId = libraryBook.LibraryId,
+					LibraryName = library.Name,
+					LibraryAddress = library.Address,
 					BookId = libraryBook.BookId,
 					Count = libraryBook.Count,
-					LibraryName = library.Name,
 					BookTitle = book.Title,
 					BookAuthor = book.AuthorName
 				});
