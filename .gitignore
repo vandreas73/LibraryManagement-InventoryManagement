@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 /InventoryManagementService/Properties/launchSettings.json
 /InventoryManagementService/appsettings.Development.json
+/InventoryManagementService/docker-compose.yml
