@@ -3,7 +3,7 @@ on:
     branches:
     - main
 env:
-  DOTNET_CORE_VERSION: 7.0.x
+  DOTNET_CORE_VERSION: 8.0.x
   CONTAINER_APP_NAME: inventorymgmt-c-app
   CONTAINER_APP_ENVIRONMENT_NAME: managedEnvironment-LibraryManageme-a030
   RESOURCE_GROUP: LibraryManagement
@@ -28,9 +28,15 @@ jobs:
       with:
         appSourcePath: ${{ github.workspace }}
         acrName: ${{ env.CONTAINER_REGISTRY_NAME }}
-        acrUsername: ${{ secrets.CatalogContainerRegistry_USERNAME_F4E5 }}
-        acrPassword: ${{ secrets.CatalogContainerRegistry_PASSWORD_F4E5 }}
+        acrUsername: ${{ secrets.CatalogContainerRegistry_USERNAME_B157 }}
+        acrPassword: ${{ secrets.CatalogContainerRegistry_PASSWORD_B157 }}
         imageToBuild: ${{ env.CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
         containerAppName: ${{ env.CONTAINER_APP_NAME }}
         containerAppEnvironment: ${{ env.CONTAINER_APP_ENVIRONMENT_NAME }}
         resourceGroup: ${{ env.RESOURCE_GROUP }}
+        environmentVariables: |
+          ASPNETCORE_ENVIRONMENT=Development
+          ConnectionStrings__LibraryContext='${{ secrets.ConnectionStrings__LibraryContext }}'
+          managedEnvironment_LibraryManageme_a030_SPN='${{ secrets.managedEnvironment_LibraryManageme_a030_SPN }}'
+          CatalogContainerRegistry_USERNAME_B157='${{ secrets.CatalogContainerRegistry_USERNAME_B157 }}'
+          CatalogContainerRegistry_PASSWORD_B157='${{ secrets.CatalogContainerRegistry_PASSWORD_B157 }}'
