@@ -204,6 +204,17 @@ namespace InventoryManagementService.Controllers
 			return Ok(libraryBooksFilled);
 		}
 
+		[HttpGet("library/{libraryId}/book/{bookId}")]
+		public async Task<ActionResult<LibraryBookDTO>> GetLibraryBook(int libraryId, int bookId)
+		{
+			var libraryBook = await _context.LibraryBook.FirstOrDefaultAsync(lb => lb.LibraryId == libraryId && lb.BookId == bookId);
+			if (libraryBook == null)
+			{
+				return NotFound();
+			}
+			return mapper.Map<LibraryBookDTO>(libraryBook);
+		}
+
 		private bool LibraryBookExists(int id)
 		{
 			return _context.LibraryBook.Any(e => e.Id == id);
