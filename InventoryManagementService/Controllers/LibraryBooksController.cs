@@ -145,24 +145,61 @@ namespace InventoryManagementService.Controllers
 			return NoContent();
 		}
 
-		[HttpGet("{id}/books")]
-		public async Task<ActionResult<IEnumerable<BookDTO>>> GetBooksOfLibrary(int id)
+		[HttpGet("{libraryId}/books-of-library")]
+		public async Task<ActionResult<IEnumerable<LibraryBookFilledDTO>>> GetBooksOfLibrary(int libraryId)
 		{
-			var libraryBooks = await _context.LibraryBook.Where(lb => lb.LibraryId == id).ToListAsync();
-			var books = new List<BookDTO>();
+			var libraryBooks = await _context.LibraryBook.Where(lb => lb.LibraryId == libraryId).ToListAsync();
+			var libraryBooksFilled = new List<LibraryBookFilledDTO>();
+			var library = await _context.Libraries.FindAsync(libraryId);
+			if (library == null)
+			{
+				return NotFound();
+			}
+
 			foreach (var libraryBook in libraryBooks)
 			{
-				books.Add(await catalogClient.BooksGETAsync(libraryBook.BookId));
+				var book = await catalogClient.BooksGETAsync(libraryBook.BookId);
+				libraryBooksFilled.Add(new LibraryBookFilledDTO
+				{
+					Id = libraryBook.Id,
+					LibraryId = libraryBook.LibraryId,
+					BookId = libraryBook.BookId,
+					Count = libraryBook.Count,
+					LibraryName = library.Name,
+					BookTitle = book.Title,
+					BookAuthor = book.AuthorName
+				});
 			}
-			return Ok(books);
+			return Ok(libraryBooksFilled);
 		}
 
-		[HttpGet("books/{bookId}")]
-		public async Task<ActionResult<IEnumerable<LibraryDTO>>> GetLibrariesHavingBook(int bookId)
+		[HttpGet("libraries-having-book/{bookId}")]
+		public async Task<ActionResult<IEnumerable<LibraryBookFilledDTO>>> GetLibrariesHavingBook(int bookId)
 		{
-			var libraries = await _context.Libraries.Include(l => l.LibraryBooks)
-				.Where(l => l.LibraryBooks.Any(lb => lb.BookId == bookId)).ToListAsync();
-			return Ok(mapper.Map<IEnumerable<LibraryDTO>>(libraries));
+			var book = await catalogClient.BooksGETAsync(bookId);
+			if (book == null)
+			{
+				return NotFound();
+			}
+
+			var librarybooks = await _context.LibraryBook.Where(lb => lb.BookId == bookId).ToListAsync();
+			var libraryBooksFilled = new List<LibraryBookFilledDTO>();
+			foreach (var libraryBook in librarybooks)
+			{
+				var library = await _context.Libraries.FindAsync(libraryBook.LibraryId);
+				libraryBooksFilled.Add(new LibraryBookFilledDTO
+				{
+					Id = libraryBook.Id,
+					LibraryId = libraryBook.LibraryId,
+					BookId = libraryBook.BookId,
+					Count = libraryBook.Count,
+					LibraryName = library.Name,
+					BookTitle = book.Title,
+					BookAuthor = book.AuthorName
+				});
+
+			}
+			return Ok(libraryBooksFilled);
 		}
 
 		private bool LibraryBookExists(int id)
